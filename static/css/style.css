@@ -1,0 +1,80 @@
+.logo{
+    width: 250px; 
+    height: 70px; 
+    margin-left: -10px; 
+    margin-right: 1px;
+    margin-top: -3.5%;
+}
+.pic {
+    display: flex; 
+    border: 1px solid;
+    border-radius: 20px;
+    margin: 10px;
+    max-width: 2150px;
+    flex: 1; 
+    overflow: hidden;
+    box-shadow: 2px 2px 2px 1px #A9A9A9;
+    transition: transform 0.2s ease-in-out; 
+}
+
+.pic:hover {
+    transform: scale(1.02); 
+    box-shadow: 2px 2px 2px 1px #4169E1;
+}
+
+.pic img {
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.pic_body {
+    display: flex;
+    flex-direction: row; 
+    flex-grow: 5;
+    padding: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+body {
+    font-family: DejaVu Sans Mono, monospace;
+    margin: 100;
+    padding: 0;
+    text-align: center;
+
+}
+footer{
+    background-color:#B0C4DE;
+    color: rgb(242, 239, 239);
+    text-align: right;
+    
+}
+
+.find{
+    margin: 20px;
+    text-align: right;
+}
+
+header{
+    font-family: FreeMono, monospace;
+}
+
+.pic_href{
+    display: block;
+    color:0000CD;
+    text-decoration: none;
+    text-align: center;
+}
+
+.pic_body{
+    margin: 0 auto;
+    text-align: center;
+}
+
+.figuration{
+    border: 1px solid;
+    border-radius: 10px;
+
+}

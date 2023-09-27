@@ -1,0 +1,37 @@
+{% extends 'bmstu/base.html' %}
+{% load static %}
+{% block title %}BMSTU{% endblock %}
+{% block button %}
+<div class="col-md-3 text-end">
+    <button type="button" class="btn btn-outline-primary me-2">Войти</button>
+    <button type="button" class="btn btn-primary">Зарегистрироваться</button>
+     </div> 
+{% endblock %}        
+
+{% block content %}
+
+
+<div class="find">
+    <form action="{%  url 'FindBuild' %}" method="get" class="main-page">
+      <input type="text" name="q" placeholder="Введите" value="{{search_value}}">
+      <button type="submit" class="btn btn-primary" >Поиск</button>
+    </form>
+  </div>
+
+  {% for build in find %}  
+  <div class="pic">
+    <a class="pic_href" href="{% url 'GetDetailedAboutPermit' build.id %}">
+        <img src="{% static build.img_url %}" alt="{{ build.title }}" class="pic_img">
+        <div class="pic_body">
+            <h4 class="pic_title">{{ build.title }}</h5>
+            <p class="pic_description">{{ build.description }}</p>
+        </div>
+        </a>
+        </div> 
+  {% endfor %}        
+{% endblock %}
+
+
+
+
+

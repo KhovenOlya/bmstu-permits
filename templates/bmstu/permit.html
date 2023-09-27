@@ -1,0 +1,27 @@
+{% extends 'bmstu/base.html' %}
+{% load static %}
+{% block title %} {{ building.title }} {% endblock %}
+{% block detailed %}
+<div class="table">
+    <th></th>
+</div>
+
+<form>
+<fieldset>
+    <div class="figuration">
+    <p><input name="fio" placeholder="Введите свое ФИО"></p>
+    <p><input name="num" placeholder="Введите серию и номер Вашего паспорта"></p>
+    <p><input name="korpus" placeholder="Введите корпус МГТУ" value="{{building.title}}"></p>
+    <p><input name="korpus" placeholder="Адрес корпуса" value="{{building.description}}"></p>
+    <p><input name="prichina" placeholder="Введите причину для входа на територрию МГТУ"></p>
+    <p><input type="datetime-local" placeholder="Выберите дату" id="localdate" name="date"/></p>
+<div class="card-button">
+    <a href="#" class="btn btn-primary">Оформить пропуск</a>
+</div>
+</div>
+
+</fieldset>
+
+</form>
+
+{% endblock %}
