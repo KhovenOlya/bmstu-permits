@@ -21,7 +21,8 @@ from bmstu_lab_m import views
 urlpatterns = [
     path('admin/', admin.site.urls),  
     path('building/<int:id>/', views.GetDetailedAboutPermit, name='GetDetailedAboutPermit'),
-    path('', views.FindBuild, name='FindBuild'),
+    path('', views.FindBuild, name='Find_url'),
+    path('update/<int:id>', views.UpdateBuild, name='UpdateBuild'),
 ]
 
 

@@ -12,23 +12,25 @@
 
 
 <div class="find">
-    <form action="{%  url 'FindBuild' %}" method="get" class="main-page">
-      <input type="text" name="building" placeholder="Введите" value="{{find_value}}">
+    <form action="{%  url 'Find_url' %}" method="get" class="main-page">
+      <input type="text" name="building" placeholder="Введите">
       <button type="submit" class="btn btn-primary" >Поиск</button>
     </form>
   </div>
-
-  {% for build in find %}  
-  <div class="pic">
-    <a class="pic_href" href="{% url 'GetDetailedAboutPermit' build.id %}">
-        <img src="{% static build.img_url %}" alt="{{ build.title }}" class="pic_img">
-        <div class="pic_body">
-            <h4 class="pic_title">{{ build.title }}</h5>
-            <p class="pic_description">{{ build.description }}</p>
-        </div>
-        </a>
-        </div> 
-  {% endfor %}        
+{% for build in find %}
+{% if build.build_statuss != 'удален' %}  
+  <div class="pic"> 
+    <a class="pic_href" href="{% url 'GetDetailedAboutPermit' build.build_id %}">
+      <img src="{% static build.img_url %}" alt="{{ build.title }}" class="pic_img">
+      <div class="pic_body">
+        <h4 class="pic_title">{{ build.title }}</h5>
+        <p class="pic_description">{{ build.description }}</p>
+      </div>
+    </a>
+    <a class="delete" href="{% url 'UpdateBuild' build.build_id %}">Удалить</a>  
+  </div>
+  {% endif %} 
+  {% endfor %}         
 {% endblock %}
 
 

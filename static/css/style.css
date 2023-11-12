@@ -12,7 +12,7 @@
     margin: 10px;
     max-width: 2150px;
     flex: 1; 
-    overflow: hidden;
+    overflow: hiden;
     box-shadow: 2px 2px 2px 1px #A9A9A9;
     transition: transform 0.2s ease-in-out; 
 }
@@ -27,6 +27,7 @@
     max-width: 100%;
     height: auto;
     flex-shrink: 0;
+    
 }
 
 .pic_body {
@@ -36,8 +37,19 @@
     padding: 20px;
     text-align: center;
     display: inline-block;
+    flex-direction: column;
 }
-
+   
+.delete {
+    align-items: flex-end;
+    display: flex;
+    margin-left: auto;
+    text-decoration: none;
+    text-align: right;
+    margin-right: 100px;
+    align-items: flex-end;
+    
+   }
 body {
     font-family: DejaVu Sans Mono, monospace;
     margin: 100;
