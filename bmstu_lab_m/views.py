@@ -5,6 +5,7 @@ from django.urls import reverse
 from .models import *
 from bmstu_lab_m import models
 import psycopg2
+'''  Select * from "Building" where build_statuss='удален' '''
 '''
 data ={'building': [
     {'id':0, 'title':'Главное здание','img_url':'../static/images/gz.png','description':'2-я Бауманская ул., 5, стр. 4', 'opening_hours': 'Режим работы: С 9:00 до 18:00'},
@@ -26,20 +27,19 @@ def FindBuild(request):
     build_name = request.GET.get('building') 
 
     if build_name:
-        find = Building.objects.filter(title__icontains=build_name)
+        find = Building.objects.filter(title__icontains=build_name, build_status="Действует")
     else:
-        build_name = ''
-        find = Building.objects.all()
+        build_name = request.session.get('build_name','')
+        find = Building.objects.filter(build_status="Действует")
     return render(request, "bmstu/university.html", {'find': find, 'find_value': build_name})              
 
 def DeleteBuild(build_id):
-    conn = psycopg2.connect(dbname="rip", host="localhost", user="postgres", password="1", port="5432")
-    with connection.cursor() as cursor:
-        build_n = 'UPDATE "Building" SET "build_statuss" = %s WHERE build_id = %s'
+    conn = psycopg2.connect(dbname="web", host="localhost", user="postgres", password="1", port="5432")
+    with conn.cursor() as cursor:
+        build_n = 'UPDATE "Building" SET "build_status" = %s WHERE build_id = %s'
         cursor.execute(build_n, ['удален', build_id])
-        connection.commit()   # реальное выполнение команд sql1
+        conn.commit()   
             
 def UpdateBuild(request, id):
-    if not DeleteBuild(id):
-        pass
-    return redirect(reverse('Find_url'))
+    DeleteBuild(id)
+    return redirect('Find_url')     

@@ -2,16 +2,15 @@
 {% load static %}
 {% block title %} {{ building.title }} {% endblock %}
 {% block detailed %}
-
-<div class="model-card">
-    <div class="model-card-image">
-        <img src="{% static building.img_url %}" alt="{{ building.title }}" class="model-detail-card">
+<div class="card">        
+    <div class="card-image">
+        <img src="{% static building.img_url %}" alt="{{ building.title }}" class="card-image">
     </div>
-    <div class="model-card-description">
+    <div class="card-description">
         <h2>{{building.title }}</h2>
         <p>{{ building.description }}</p>
         <p>{{ building.opening_hours }}</p>
 
-    </div>
+</div>
 </div>
 {% endblock %}

@@ -3,6 +3,6 @@ from bmstu_lab_m import models
 
 admin.site.register(models.Building)
 admin.site.register(models.User)
-admin.site.register(models.Status)
-admin.site.register(models.Build_Status)
+admin.site.register(models.Permit)
+admin.site.register(models.Build_Permit)
 # Register your models here.

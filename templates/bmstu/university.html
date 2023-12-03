@@ -17,8 +17,7 @@
       <button type="submit" class="btn btn-primary" >Поиск</button>
     </form>
   </div>
-{% for build in find %}
-{% if build.build_statuss != 'удален' %}  
+{% for build in find %} 
   <div class="pic"> 
     <a class="pic_href" href="{% url 'GetDetailedAboutPermit' build.build_id %}">
       <img src="{% static build.img_url %}" alt="{{ build.title }}" class="pic_img">
@@ -28,8 +27,7 @@
       </div>
     </a>
     <a class="delete" href="{% url 'UpdateBuild' build.build_id %}">Удалить</a>  
-  </div>
-  {% endif %} 
+
   {% endfor %}         
 {% endblock %}
 

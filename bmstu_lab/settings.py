@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'bmstu_lab.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':  'django.db.backends.postgresql',
-        'NAME': 'rip',
+        'NAME': 'web',
         'USER':'postgres',
         'PASSWORD': '1',
         'HOST':'localhost',

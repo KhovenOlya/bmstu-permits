@@ -6,56 +6,44 @@
     margin-top: -3.5%;
 }
 .pic {
-    display: flex; 
+    display: flex;
+    flex-direction: column;
     border: 1px solid;
     border-radius: 20px;
-    margin: 10px;
     max-width: 2150px;
-    flex: 1; 
-    overflow: hiden;
+    flex: 1;
+    overflow: hidden;
     box-shadow: 2px 2px 2px 1px #A9A9A9;
-    transition: transform 0.2s ease-in-out; 
+    transition: transform 0.2s ease-in-out;
+    box-sizing: border-box; 
 }
-
 .pic:hover {
     transform: scale(1.02); 
     box-shadow: 2px 2px 2px 1px #4169E1;
 }
-
 .pic img {
     width: 300px;
     max-width: 100%;
     height: auto;
     flex-shrink: 0;
-    
+    align-self: flex-end; /* Расположение картинки по правому краю */
+    margin-top: 10px; /* Отступ между картинками */
+    align-self: flex-start;
 }
-
 .pic_body {
     display: flex;
-    flex-direction: row; 
+    flex-direction: column;
     flex-grow: 5;
+    flex-grow: 1;
     padding: 20px;
     text-align: center;
     display: inline-block;
-    flex-direction: column;
+    align-items: flex-start;
 }
-   
-.delete {
-    align-items: flex-end;
-    display: flex;
-    margin-left: auto;
-    text-decoration: none;
-    text-align: right;
-    margin-right: 100px;
-    align-items: flex-end;
-    
-   }
 body {
     font-family: DejaVu Sans Mono, monospace;
     margin: 100;
     padding: 0;
-    text-align: center;
-
 }
 footer{
     background-color:#B0C4DE;
@@ -77,18 +65,33 @@ header{
     display: block;
     color:0000CD;
     text-decoration: none;
-    text-align: center;
 }
 
 .pic_body{
     margin: 0 auto;
     text-align: center;
 }
+.delete {
+    align-items: flex-end;
+    display: flex;
+    margin-left: auto;
+    text-decoration: none;
+    text-align: right;
+    margin-right: 100px;
+    align-items: flex-end;
+    
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+.card-image{
+    width: 300px; /* Задайте желаемую ширину изображения */ 
+    max-width: 100%;
 
-.figuration{
-    border: 2px solid;
-    border-radius: 10px;
-    padding: 5px;
-    border-left: 100px
-
+}
+.card-description{
+margin-top: 10px; 
 }
