@@ -45,6 +45,11 @@ INSTALLED_APPS = [
     'bmstu_lab',
 ]
 
+AWS_STORAGE_BUCKET_NAME = 'img'
+AWS_ACCESS_KEY_ID = 'minio'
+AWS_SECRET_ACCESS_KEY = 'minio124'
+AWS_S3_ENDPOINT_URL = 'http://127.0.0.1:9000'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

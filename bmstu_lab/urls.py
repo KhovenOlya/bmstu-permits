@@ -41,6 +41,7 @@ urlpatterns = [
     path('api/permits/delete/<int:pk>/', views.delete_permit, name='delete_permit'),
     #path('api/delete_permit_build/', views.delete_building_from_permit, name='delete_building'),
     path('api/build_permits/delete/<int:pk>/', views.DeletePermitBuilding, name='delete_permit_building'),
+    path('api/update_img_building/<int:pk>/', views.update_img_building, name='update_img_building'),
 
 ]
 

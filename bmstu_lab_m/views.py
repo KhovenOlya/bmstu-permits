@@ -10,6 +10,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .serializers import *
+from minio import Minio
+import uuid
+import io
 
 '''  Select * from "Building" where build_statuss='удален' '''
 '''
@@ -50,6 +53,12 @@ def UpdateBuild(request, id):
     DeleteBuild(id)
     return redirect('Find_url')     
 '''
+
+minio_client = Minio(endpoint="localhost:9000",   # адрес сервера
+               access_key='minio',          # логин админа
+               secret_key='minio124',       # пароль админа
+               secure=False)                # опциональный параметр, отвечающий за вкл/выкл защищенное TLS соединение
+
 @api_view(["Get"]) #Возвращает список корпусов 
 def get_building(request, format=None):
     building_list = Building.objects.filter(build_status="В работе")
@@ -91,7 +100,7 @@ def add_building_to_permit(request, pk):
         build = Build_Permit.objects.get(permit=permits, build=builds) # проверка есть ли такая м-м
         return Response(f"Ошибка. Такая запись уже существует.")
     except Build_Permit.DoesNotExist:
-        permit_build = Build_Permit(                            # если нет, создаем м-м
+        permit_build = Build_Permit(                           
             permit=permits, build=builds
         )
         permit_build.save()
@@ -222,3 +231,28 @@ def DeletePermitBuilding(request, pk):
     permit_build = Build_Permit.objects.all()
     serializer = Build_PermitSerializer(permit_build, many=True)
     return Response(serializer.data)
+
+@api_view(["PUT"])
+def update_img_building(request, pk):
+    building = get_object_or_404(Building, pk=pk)
+
+    serializer = BuildingSerializer(building, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        img_name = str(uuid.uuid4())
+
+        img_byte = request.data["image"]
+        
+        minio_client.put_object(
+            bucket_name='img',  
+            object_name=img_name,
+            data=img_byte,
+            length=len(img_byte)
+        )
+
+        serializer.validated_data['img_url'] = img_name
+        serializer.save()
+
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
