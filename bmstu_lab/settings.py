@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
      # DRF
     'rest_framework',
+    'corsheaders',
+    'drf_yasg',
 
     # Наше приложение
     'bmstu_lab',
