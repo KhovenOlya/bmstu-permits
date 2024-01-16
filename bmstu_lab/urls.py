@@ -60,9 +60,9 @@ urlpatterns = [
     path('api/user/registration/', views.registration, name='registration'),
     path('api/user/login/', views.login_view, name='login'),
     path('api/user/logout/', views.logout_view, name='logout'),
-    path('api/permits/<int:permit_id>/complete/', views.complete_permit, name='complete_permit'),
 
-
+    path('api/permits/<int:permit_id>/start_security_check', views.start_security_check, name='start_security_check'),
+    path('api/permits/<int:permit_id>/update_security_decision', views.update_security_decision, name='update_security_decision'),
 ]
 
 

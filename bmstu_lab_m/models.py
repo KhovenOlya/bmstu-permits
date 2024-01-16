@@ -32,6 +32,7 @@ class Permit(models.Model):
     passege_date = models.DateTimeField() # Дата прохождения
     date_end = models.DateTimeField() # Дата закрытия заявки
     admin = models.ForeignKey('User', models.DO_NOTHING, related_name='requests_admin_set', blank=True, null=True)
+    security_decision = models.CharField(max_length=30, blank=True, null=True)
     class Meta:
         db_table = "Permit"
     

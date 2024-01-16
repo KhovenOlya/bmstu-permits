@@ -26,6 +26,7 @@ from rest_framework.permissions import BasePermission
 import redis
 from django.conf import settings
 from rest_framework import status as drf_status
+import requests
 
 '''
 data ={'building': [
@@ -230,8 +231,6 @@ def get_building(request, format=None):
         building_list = Building.objects.filter(build_status="Действует")
 
     serializer = BuildingSerializer(building_list, many=True)
-    data = serializer.data
-    print(data)
     return Response(serializer.data)
 
 @swagger_auto_schema(method='get', Building_Permit="Get Detail Building", responses={200: BuildingSerializer()})
@@ -393,7 +392,12 @@ def update_status_user(request, pk):
 
     return Response(serializer.data)
 
-@swagger_auto_schema(method='PUT', Building_Permit="Update Status Admin", responses={200: 'OK', 404: 'Not Found', 400: 'Bad Request'})
+@swagger_auto_schema(
+    method='PUT',
+    operation_description="Update Status Admin",
+    request_body=Build_Permit,
+    responses={200: 'OK', 404: 'Not Found', 400: 'Bad Request'}
+)
 @api_view(["PUT"])
 def update_status_admin(request, pk):
     if not Permit.objects.filter(pk=pk).exists():
@@ -401,7 +405,7 @@ def update_status_admin(request, pk):
 
     permit_status = request.data.get("status")
      
-    if permit_status not in ['Завершен', 'Отклонен']:
+    if permit_status not in ['Завершено', 'Отклонено']:
         return Response({"error": "Недопустимый статус"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
     
     permit = Permit.objects.get(pk=pk)
@@ -483,30 +487,33 @@ def update_img_building(request, pk):
 
 
 
-@swagger_auto_schema(method='PUT', Building_Permit="Complete Permit", responses={200: PermitSerializer()})
-@api_view(["PUT"])
-@permission_classes([IsAuthenticated])
-def complete_permit(request, permit_id, format=None):
-    user = check_authorize(request)
-    if not user:
-        return Response(status=drf_status.HTTP_403_FORBIDDEN)
 
+    
+@api_view(["PUT"])
+def start_security_check(request, permit_id, format=None):
     try:
         permit = Permit.objects.get(permit_id=permit_id)
     except Permit.DoesNotExist:
-        return Response(status=drf_status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # Проверяем, является ли пользователь создателем или модератором (администратором)
-    if user.role == "admin":
-        # Обновление полей и завершение заявки
-        permit.status = "Завершено"
-        permit.date_end = timezone.now()  # Пример обновления других полей
-        permit.save()
+    resp = requests.post("http://localhost:8080/security-decision", json={"id": permit_id})
+    
+    if resp.status_code == 200:
+        return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        serializer = PermitSerializer(permit)
-        return Response(serializer.data)
-    elif permit.user == user:
-        # Если пользователь - создатель, возвращаем ошибку 403
-        return Response(status=drf_status.HTTP_403_FORBIDDEN)
-    else:
-        return Response(status=drf_status.HTTP_403_FORBIDDEN)
+@api_view(["PUT"])
+def update_security_decision(request, permit_id, format=None):
+    try:
+        permit = Permit.objects.get(permit_id=permit_id)
+    except Permit.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.data.get("token") != "H#12H$EdEi^9":
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    permit.security_decision = request.data.get("security_decision")
+    permit.save()
+
+    return Response(status=status.HTTP_200_OK)
+

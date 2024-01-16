@@ -44,6 +44,7 @@ class PermitSerializer(serializers.ModelSerializer):
     date_end = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     admin = serializers.CharField(source='user.login', read_only=True)
 
+
     class Meta:
         model = Permit
         fields = [
@@ -55,6 +56,7 @@ class PermitSerializer(serializers.ModelSerializer):
             'passege_date',
             'date_end',
             'admin',
+            'security_decision',
         ]
 
 class Build_PermitSerializer(serializers.ModelSerializer):
