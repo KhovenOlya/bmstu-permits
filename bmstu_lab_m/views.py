@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from datetime import date
+from datetime import date, datetime, timedelta
+from django.utils import timezone
 from django.db import connection
 from django.urls import reverse
 from .models import *
@@ -54,16 +55,36 @@ def UpdateBuild(request, id):
     return redirect('Find_url')     
 '''
 
+
+'''{
+    "title": "kjhgkdjhgkdnnj",
+    "img_url": "jhkjfokk",
+    "description":"jhdjlklfhjdh",
+    "opening_hours": "jgmlklgkg",
+    "build_status": "В работе"
+
+     
+}
+'''
+
 minio_client = Minio(endpoint="localhost:9000",   # адрес сервера
                access_key='minio',          # логин админа
                secret_key='minio124',       # пароль админа
                secure=False)                # опциональный параметр, отвечающий за вкл/выкл защищенное TLS соединение
 
-@api_view(["Get"]) #Возвращает список корпусов 
+@api_view(["GET"])  # Возвращает список корпусов
 def get_building(request, format=None):
-    building_list = Building.objects.filter(build_status="В работе")
+    # building_list = Building.objects.filter(build_status="Действует")
+    title = request.GET.get('title', None)
+
+    if title:
+        building_list = Building.objects.filter(title=title, build_status="Действует")
+    else:
+        building_list = Building.objects.filter(build_status="Действует")
+
     serializer = BuildingSerializer(building_list, many=True)
     return Response(serializer.data)
+
 
 @api_view(["GET"])
 def get_detail_building(request, pk, format=None):
@@ -84,29 +105,97 @@ def add_building(request, format=None):
 
 @api_view(['POST'])
 def add_building_to_permit(request, pk):
-    try: 
-        permits = Permit.objects.filter( status='В работе').latest('date_create') 
+        try:
+            permits = Permit.objects.filter(status='Черновик').latest('date_create')
+            print('hhghg')
+        except Permit.DoesNotExist:
+                current_user = User.objects.get(user_id=1)
+                permits = Permit.objects.create(
+                status='Черновик',
+                date_create=datetime.now(),
+                passege_date=datetime.now() + timedelta(days=1), 
+                date_end=datetime.now() + timedelta(days=2),  
+                admin=current_user,
+            )
+                permits.save()
+                print('bbfbfd')
+
+        build_id = pk
+        try:
+            build = Building.objects.get(build_id=build_id)
+            build_permit = Build_Permit.objects.get(permit=permits, build=build)
+            return Response("Ошибка. Такая запись уже существует.")
+        except Build_Permit.DoesNotExist:
+            build_permit = Build_Permit(
+                permit=permits,
+                build=build,
+            )
+            build_permit.save()
+
+        permit_list = Permit.objects.all()
+        serializer = PermitSerializer(permit_list, many=True)
+        return Response(serializer.data)
+'''
+@api_view(['POST'])
+def add_building_to_permit(request, pk):
+    try:
+        permits = Permit.objects.filter(status='Введен').latest('date_create')
     except Permit.DoesNotExist:
+        user = request.user  # Добавим эту строку для получения пользователя
         permits = Permit(                             
-            status='В работе',
+            status='Введен',
             date_create=datetime.now(),
             user=user,
-            )
-        permit.save()
-    permit_id = permits
+        )
+        permits.save()
+
     build = pk
     try:
         builds = Building.objects.get(build_id=pk)
-        build = Build_Permit.objects.get(permit=permits, build=builds) # проверка есть ли такая м-м
-        return Response(f"Ошибка. Такая запись уже существует.")
+        build_permit = Build_Permit.objects.get(permit=permits, build=builds)
+        return Response("Ошибка. Такая запись уже существует.")
     except Build_Permit.DoesNotExist:
-        permit_build = Build_Permit(                           
+        build_permit = Build_Permit(                           
             permit=permits, build=builds
         )
-        permit_build.save()
-    permitt = Permit.objects.all()  # выводим все заказы
+        build_permit.save()
+
+    permitt = Permit.objects.all()
     serializer = PermitSerializer(permitt, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def add_building_to_permit(request, pk):
+    # Проверяем, аутентифицирован ли пользователь
+    if request.user.is_authenticated:
+        try:
+            permits = Permit.objects.filter(status='В работе').latest('date_create')
+        except Permit.DoesNotExist:
+            user = request.user
+            permits = Permit(                             
+                status='В работе',
+                date_create=datetime.now(),
+                user=user,
+            )
+            permits.save()
+
+        build = pk
+        try:
+            builds = Building.objects.get(build_id=pk)
+            build_permit = Build_Permit.objects.get(permit=permits, build=builds)
+            return Response("Ошибка. Такая запись уже существует.")
+        except Build_Permit.DoesNotExist:
+            build_permit = Build_Permit(                           
+                permit=permits, build=builds
+            )
+            build_permit.save()
+
+        permitt = Permit.objects.all()
+        serializer = PermitSerializer(permitt, many=True)
+        return Response(serializer.data)
+    else:
+        return Response("Ошибка. Пользователь не аутентифицирован.")
+'''
 
 @api_view(["PUT"]) #изменение
 def alter_building(request, pk, format=None):
@@ -132,19 +221,41 @@ def delete_building(request, pk):
 Заявки - GET список (кроме удаленных и черновика), GET одна запись (поля заявки + ее услуги),
 PUT изменение (если есть доп поля заявки), PUT сформировать создателем, PUT завершить/отклонить модератором, DELETE удаление '''
 @api_view(["GET"])
-def get_permit(request):
-    permit = Permit.objects.exclude(status__in=['Удален'])
+def get_permit(permit, format=None):
+    date_formation = permit.GET.get('date_formation', None)
+    status = permit.GET.get('status', None)
+   
+    permit = Permit.objects.all()
+
+    if date_formation:
+        permit = permit.filter(date_formation=date_formation)
+    if status:
+        permit = permit.filter(status=status)
     serializer = PermitSerializer(permit, many=True)
     return Response(serializer.data)
 
 @api_view(["GET"])
-def get_building_detailed(request, permit_id):
+def get_permit_detailed(request, permit_id):
     if not Permit.objects.filter(pk=permit_id).exists():
         return Response(status=status.HTTP_404_NOT_FOUND)
+
     permit = Permit.objects.get(pk=permit_id)
     serializer = PermitSerializer(permit, many=False)
-    return Response(serializer.data)
 
+    # Получение связанных зданий    ``
+    build_permit_objects = Build_Permit.objects.filter(permit=permit)
+    building_objects = [build_permit.build for build_permit in build_permit_objects]
+
+    building_serializer = BuildingSerializer(building_objects, many=True)
+
+    # Добавление связанных зданий к сериализатору Permit
+    serialized_data = serializer.data
+    serialized_data['buildings'] = building_serializer.data
+
+    return Response(serialized_data)
+
+
+'''
 @api_view(["PUT"])
 def update_permit(request, pk):
     if not Permit.objects.filter(pk=pk).exists():
@@ -156,16 +267,15 @@ def update_permit(request, pk):
     permit.status = 'В работе'
     permit.save()
     return Response(serializer.data)
-
+'''
 
 @api_view(["PUT"])
 def update_status_user(request, pk):
     if not Permit.objects.filter(pk=pk).exists():
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     permit_status = request.data.get("status")
 
-    if permit_status != 'В работе':
+    if permit_status != 'Черновик':
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
     permit = Permit.objects.get(pk=pk)
     permit.status = permit_status
@@ -178,14 +288,16 @@ def update_status_user(request, pk):
 @api_view(["PUT"])
 def update_status_admin(request, pk):
     if not Permit.objects.filter(pk=pk).exists():
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response({"error": "Разрешение с таким pk не найдено"}, status=status.HTTP_404_NOT_FOUND)
 
     permit_status = request.data.get("status")
      
-    if permit_status != 'Завершен' and permit_status != 'Отклонен':
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    if permit_status not in ['Завершен', 'Отклонен']:
+        return Response({"error": "Недопустимый статус"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    
     permit = Permit.objects.get(pk=pk)
     permit.status = permit_status
+    permit.date_formation = datetime.now()
     permit.save()
 
     serializer = PermitSerializer(permit, many=False)
@@ -256,3 +368,5 @@ def update_img_building(request, pk):
         return Response(serializer.data)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+

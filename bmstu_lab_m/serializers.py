@@ -27,23 +27,15 @@ class BuildingSerializer(serializers.ModelSerializer):
         'title', 
         'description', 
         'img_url', 
-        'opening_hours',
-        'build_status',
-        ]
-'''
- def get_image(self, obj):
-        image_data = get_image_from_s3(obj.modeling_image_url)
-        if image_data:
-            return image_data
-        return None
-'''
+        'opening_hours',       ]
+
 class PermitSerializer(serializers.ModelSerializer):
-    user = serializers.CharField(source='user.user_id')
+    user = serializers.CharField(source='user.login', read_only=True)
     date_create = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     date_formation = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     passege_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     date_end = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
-    admin = serializers.CharField(source='user.is_admin')
+    admin = serializers.CharField(source='user.login', read_only=True)
 
     class Meta:
         model = Permit

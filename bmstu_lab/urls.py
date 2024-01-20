@@ -25,7 +25,7 @@ urlpatterns = [
     #path('building/<int:id>/', views.GetDetailedAboutPermit, name='GetDetailedAboutPermit'),
     #path('', views.FindBuild, name='Find_url'),
     #path('update/<int:id>', views.UpdateBuild, name='UpdateBuild'),
-
+    path('', views.get_building, name='get_building_list'),
     path('api/buildings/', views.get_building, name='get_building_list'),
     path('api/buildings/<int:pk>/', views.get_detail_building, name='get_detail_building'),
     path('api/buildings/add/', views.add_building, name='create_building'),
@@ -34,14 +34,15 @@ urlpatterns = [
     path('api/buildings/delete/<int:pk>/', views.delete_building, name='delete_building'),
 
     path('api/permits/', views.get_permit, name='get_permit_list'),
-    path('api/permits/<int:permit_id>/', views.get_building_detailed, name='get_building_detailed'),
-    path('api/permits/update/<int:pk>/', views.update_permit, name='update_permit'),
+    path('api/permits/<int:permit_id>/', views.get_permit_detailed, name='get_permit_detailed'),
+    #path('api/permits/update/<int:pk>/', views.update_permit, name='update_permit'),   
     path('api/permits/update_status_user/<int:pk>/', views.update_status_user, name='update_status_user'),
     path('api/permits/update_status_admin/<int:pk>/', views.update_status_admin, name='update_status_admin'),
     path('api/permits/delete/<int:pk>/', views.delete_permit, name='delete_permit'),
     #path('api/delete_permit_build/', views.delete_building_from_permit, name='delete_building'),
     path('api/build_permits/delete/<int:pk>/', views.DeletePermitBuilding, name='delete_permit_building'),
     path('api/update_img_building/<int:pk>/', views.update_img_building, name='update_img_building'),
+
 
 ]
 
