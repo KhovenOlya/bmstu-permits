@@ -6,3 +6,4 @@
 Смежные репозитории: 
 - [фронтенд (React, RTK, Vite)](https://github.com/KhovenOlya/bmstu-permits-front)
 - [мобильное приложение (Swift)](https://github.com/KhovenOlya/bmstu-permits-mobile)
+-[репозиторий асинхронного сервиса (Go)](https://github.com/KhovenOlya/async)
